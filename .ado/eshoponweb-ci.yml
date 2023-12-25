@@ -7,6 +7,16 @@ resources:
     - repository: self
       trigger: none
 
+variables:
+- group: Variable Group -JDLAB
+- name: ConnectionStrings.CatalogConnection
+  value: '$(CatalogConnectionToken)'
+- name: ConnectionStrings.IdentityConnection
+  value: '$(IdentityConnectionToken)'
+- name: ReleaseVersion
+  value: '$(ReleaseVersionToken)'
+
+
 stages:
 - stage: Build
   displayName: Build .Net Core Solution
@@ -53,3 +63,10 @@ stages:
         PathtoPublish: '$(Build.SourcesDirectory)/.azure/bicep/webapp.bicep'
         ArtifactName: 'Bicep'
         publishLocation: 'Container'
+    
+    - task: FileTransform@1
+      inputs:
+        folderPath: '$(System.DefaultWorkingDirectory)/src/web'
+        fileType: 'json'
+        targetFiles: 'appsettings.json'
+
